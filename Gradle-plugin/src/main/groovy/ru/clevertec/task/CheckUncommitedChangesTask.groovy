@@ -12,10 +12,9 @@ class CheckUncommitedChangesTask extends DefaultTask {
     void uncommitedChanges() {
         def myExt = project.extensions.getByType(TagExtension)
         def process = GIT_STATUS.execute()
-        def output = Optional.ofNullable(process.text.trim())
 
-        output
-            .filter(it -> !it.isEmpty())
-            .ifPresent({ tag -> throw new UncommitedChangesException(myExt.getTagVersion().get())})
+        Optional.ofNullable(process.text.trim())
+                .filter(it -> !it.isEmpty())
+                .ifPresent({ tag -> throw new UncommitedChangesException(myExt.getTagVersion().get())})
     }
 }

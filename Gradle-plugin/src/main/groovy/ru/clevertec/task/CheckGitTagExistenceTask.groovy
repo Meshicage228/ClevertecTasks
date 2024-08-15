@@ -9,9 +9,7 @@ class CheckGitTagExistenceTask extends DefaultTask {
 
     @TaskAction
     void gitTagExistence() {
-        def currentGitTag = Optional.ofNullable(CURRENT_TAG.execute().text.trim())
-
-        currentGitTag
+        Optional.ofNullable(CURRENT_TAG.execute().text.trim())
                 .filter (it -> !it.isEmpty())
                 .ifPresent ({ tag -> throw new TagAlreadyExistsException(tag)})
     }
