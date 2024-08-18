@@ -1,0 +1,21 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+    id 'groovy'
+}
+
+group = "ru.clevertec"
+version = "1.0.1"
+
+repositories {
+    mavenCentral()
+}
+
+gradlePlugin {
+    plugins {
+        gitPlugin {
+            id = 'ru.clevertec.git-plugin'
+            implementationClass = 'ru.clevertec.plugin.GradleTestPlugin'
+        }
+    }
+}
