@@ -18,16 +18,17 @@ class CollectGitStatisticsTask extends DefaultTask {
 
         def branchName = CURRENT_BRANCH_NAME.execute().text.trim()
 
-        myExt.tagVersion.set(allTags.stream()
+        def maxTag = allTags.stream()
                 .max(Comparator.naturalOrder())
-                .map(it -> getVersion(it, branchName))
-                .orElseGet(() -> getVersion(null, branchName)))
+                .orElse("v0.0")
+
+        def versionArray = maxTag.replace('v', '').split('\\.').collect { it as int }
+        myExt.tagVersion.set(getVersion(versionArray as int[], branchName))
     }
 
-    def getVersion(lastTag, branch) {
-        def (major, minor) = lastTag ? Arrays.stream(lastTag.replace('v', '').split('\\.'))
-                .map(Integer::parseInt)
-                .toArray(Integer[]::new) : new int[] {0, 0}
+    def getVersion(int[] arr, branch) {
+        def major = arr[0]
+        def minor = arr[1]
 
         switch (branch) {
             case "dev":
