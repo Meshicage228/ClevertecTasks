@@ -12,6 +12,7 @@ repositories {
 ext{
     versions = [
             "commons_lang" : "3.12.0",
+            "jackson"      : "2.0.1",
             "lombok"       : "1.18.34",
             "assertJ"      : "3.26.3"
     ]
@@ -19,7 +20,8 @@ ext{
 
 dependencies {
     implementation "org.apache.commons:commons-lang3:${versions.commons_lang}"
-    
+    implementation "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
+
     compileOnly "org.projectlombok:lombok:${versions.lombok}"
     annotationProcessor "org.projectlombok:lombok:${versions.lombok}"
 

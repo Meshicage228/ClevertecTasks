@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
 
+import static java.util.Objects.nonNull;
 import static ru.clevertec.enums.ConstantChars.*;
 
 public class JsonCustomDeserializer {

@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.clevertec.domain.District;
@@ -16,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings(value = "deprecation")
 public class JsonCustomDeserializerTest {
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @Test
     @DisplayName("Using JsonField annotation correct deserialization")
     public void correctDeserialization() throws Exception {
@@ -24,12 +27,7 @@ public class JsonCustomDeserializerTest {
                 .sleepingStreet(true)
                 .build();
 
-        String inputJson = """
-                {
-                    "streetName": "Test",
-                    "sleepingStreet": true
-                }
-                """;
+        String inputJson = mapper.writeValueAsString(expected);
 
         Street street = deserializeJson(inputJson, Street.class);
 
@@ -82,21 +80,10 @@ public class JsonCustomDeserializerTest {
                 .hospital(new Hospital("Hospital", 1984))
                 .mainStreet(new Street("Big street", true))
                 .build();
-        String json = """
-                {
-                  "districtName": "Urban District",
-                  "mainStreet": {
-                      "streetName" : "Big street",
-                      "sleepingStreet": true
-                  },
-                  "hospital": {
-                      "title" : "Hospital",
-                      "yearOfFoundation": 1984
-                  },
-                  "schoolCount": 10
-                }""";
 
-        District deserialized = deserializeJson(json, District.class);
+        String json = mapper.writeValueAsString(expected);
+
+        Object deserialized = deserializeJson(json, District.class);
 
         assertThat(deserialized).isEqualToComparingFieldByFieldRecursively(expected);
     }
@@ -124,27 +111,7 @@ public class JsonCustomDeserializerTest {
                 .streets(streets)
                 .build();
 
-        String json = """
-                {
-                  "districtName": "Urban District",
-                  "districtStreets": [
-                  {
-                      "streetName" : "Big street",
-                      "sleepingStreet": true
-                  }
-                  ],
-                  "hospitals": [
-                  {
-                      "title" : "Hospital1",
-                      "yearOfFoundation": 1984
-                  },
-                  {
-                      "title" : "Hospital2",
-                      "yearOfFoundation": 1985
-                  },
-                  ],
-                  "schoolCount": 10
-                }""";
+        String json = mapper.writeValueAsString(expected);
 
         District deserialized = deserializeJson(json, District.class);
 
