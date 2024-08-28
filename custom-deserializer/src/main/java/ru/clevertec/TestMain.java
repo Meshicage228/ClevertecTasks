@@ -9,20 +9,26 @@ public class TestMain {
                 {
                   "districtName": "Urban District",
                   "mainStreet: {
-                      "name" : "Big street",
-                      "isSleeping": true
+                      "streetName" : "Big street",
+                      "sleepingStreet": true
                   },
-                  "streets": [
+                  "hospitals": [
                     {
-                      "name": "Broadway",
-                      "isSleeping": true
-                    },
-                    {
-                      "name": "Park Avenue",
-                      "isSleeping": false
+                      "title": "Hospital",
+                      "yearOfFoundation" : 1939
                     }
                   ],
-                  "schools": 10
+                  "districtStreets": [
+                    {
+                      "streetName": "Broadway",
+                      "sleepingStreet": true
+                    },
+                    {
+                      "streetName": "Park Avenue",
+                      "sleepingStreet": false
+                    }
+                  ],
+                  "schoolCount": 10
                 }""";
 
         JsonCustomDeserializer jsonCustomDeserializer = new JsonCustomDeserializer(json, District.class);
