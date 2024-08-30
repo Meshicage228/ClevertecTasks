@@ -5,18 +5,14 @@ import ru.clevertec.annotation.JsonField;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
-
 public class ClassReflectionService {
 
-    private final Map<Predicate<Class<?>>, Function<Object, Object>> typeConverter = new HashMap<>(){{
+    private final Map<Predicate<Class<?>>, Function<Object, Object>> handler = new HashMap<>(){{
         put(String.class::isAssignableFrom, String::valueOf);
         put(aClass -> Integer.class.isAssignableFrom(aClass) || int.class.isAssignableFrom(aClass), value -> Integer.parseInt((String) value));
         put(aClass -> Boolean.class.isAssignableFrom(aClass) || boolean.class.isAssignableFrom(aClass), value -> Boolean.parseBoolean((String) value));
@@ -30,6 +26,25 @@ public class ClassReflectionService {
                                 : field.getName(),
                         Field::getGenericType
                 ));
+    }
+
+    public Map<String, String> collectAnnotationNameFieldWithActualName(Class<?> clazz){
+        return Arrays.stream(clazz.getDeclaredFields())
+                .collect(Collectors.toMap(
+                        field -> field.isAnnotationPresent(JsonField.class)
+                                ? field.getAnnotation(JsonField.class).jsonField()
+                                : field.getName(),
+                        Field::getName
+                ));
+    }
+
+    public boolean isCustomClass(Class<?> clazz){
+        return handler.entrySet().stream()
+                .noneMatch(set -> set.getKey().test(clazz));
+    }
+
+    public boolean isListType(Class<?> clazz) {
+        return List.class.isAssignableFrom(clazz);
     }
 
     public Map<String, Type> collectFieldTypes(Class<?> clazz) {
@@ -55,25 +70,8 @@ public class ClassReflectionService {
         }
     }
 
-    public HashMap<String, String[]> rebuildJsonMap(Class<?> clazz, HashMap<String, String[]> currentMap) {
-        HashMap<String, String[]> result = new HashMap<>();
-
-        Arrays.stream(clazz.getDeclaredFields())
-                .filter(field -> nonNull(field.getAnnotation(JsonField.class)))
-                .forEach(field -> {
-                    String jsonField = field.getAnnotation(JsonField.class).jsonField();
-                    if (currentMap.containsKey(jsonField)) {
-                        result.put(field.getName(), currentMap.get(jsonField));
-                        currentMap.remove(jsonField);
-                    }
-                });
-
-        result.putAll(currentMap);
-        return result;
-    }
-
     public Object convertValue(Object value, Class<?> currentClass) {
-        return typeConverter.entrySet().stream()
+        return handler.entrySet().stream()
                 .filter(entry -> entry.getKey().test(currentClass))
                 .map(entry -> entry.getValue().apply(value))
                 .findFirst()
