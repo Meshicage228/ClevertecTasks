@@ -11,7 +11,8 @@ public enum ConstantChars {
     SPEC_DELIMITER('|'),
     DELIMITER_OBJECTS('&'),
     COLON(':'),
-    COMMA(',');
+    COMMA(','),
+    NEW_LINE('\n');
 
     private final char symbol;
 

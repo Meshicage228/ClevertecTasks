@@ -17,4 +17,8 @@ public class Street {
     @JsonProperty(value = "streetName")
     private String name;
     private boolean sleepingStreet;
+
+    public boolean getSleepingStreet() {
+        return sleepingStreet;
+    }
 }
