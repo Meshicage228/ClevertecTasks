@@ -51,7 +51,7 @@ public class JsonCustomDeserializer {
             Class<?> innerClass = classService.getInnerClass(type);
             Class<?> currentRawClass = classService.getRawType(type);
 
-            if (isListType(currentRawClass) || isInnerObject(jsonValues[0])) {
+            if (classService.isListType(currentRawClass) || isInnerObject(jsonValues[0])) {
                 HashMap<String, String[]> valueMap = jsonUtils.parseInnerArray(jsonValues[0]);
 
                 compareJsonAndClassFieldsKeys(valueMap, classService.collectFieldTypesWithAnnotation(innerClass));
@@ -62,19 +62,22 @@ public class JsonCustomDeserializer {
     @SuppressWarnings("deprecation")
     private <T> T createInstance(HashMap<String, String[]> jsonMap, Class<T> clazz) throws Exception {
         Map<String, Type> stringTypeMap = classService.collectFieldTypes(clazz);
+        Map<String, String> actualFieldNames = classService.collectAnnotationNameFieldWithActualName(clazz);
+
         T source = clazz.newInstance();
 
-        for (Map.Entry<String, String[]> entry : classService.rebuildJsonMap(clazz, jsonMap).entrySet()) {
+        for (var entry : jsonMap.entrySet()) {
             String jsonKey = entry.getKey();
+            String actualFieldName = actualFieldNames.get(jsonKey);
             String[] jsonValues = entry.getValue();
-            Type type = stringTypeMap.get(jsonKey);
+            Type type = stringTypeMap.get(actualFieldName);
 
             Class<?> currentClass = classService.getInnerClass(type);
             Class<?> currentRawClass = classService.getRawType(type);
 
-            String methodName = getSetterMethodName(jsonKey);
+            String methodName = getSetterMethodName(actualFieldName);
 
-            if (isListType(currentRawClass)) {
+            if (classService.isListType(currentRawClass)) {
                 createInnerListInstances(jsonValues, currentClass);
                 setValue(type, methodName, innerValues, source);
                 innerValues = new ArrayList<>();
@@ -90,10 +93,6 @@ public class JsonCustomDeserializer {
 
     private String getSetterMethodName(String jsonKey) {
         return "set" + jsonKey.substring(0, 1).toUpperCase() + jsonKey.substring(1);
-    }
-
-    private boolean isListType(Class<?> clazz) {
-        return List.class.isAssignableFrom(clazz);
     }
 
     private boolean isInnerObject(String jsonValue) {
