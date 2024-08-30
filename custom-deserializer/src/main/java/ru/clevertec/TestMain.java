@@ -2,6 +2,7 @@ package ru.clevertec;
 
 import ru.clevertec.domain.District;
 import ru.clevertec.service.JsonCustomDeserializer;
+import ru.clevertec.service.JsonCustomSerializer;
 
 public class TestMain {
     public static void main(String[] args) throws Exception {
@@ -31,8 +32,16 @@ public class TestMain {
                   "schoolCount": 10
                 }""";
 
-        JsonCustomDeserializer jsonCustomDeserializer = new JsonCustomDeserializer(json, District.class);
-        District deserialized = jsonCustomDeserializer.deserialize();
-        System.out.println(deserialized);
+        District deserialized = deserialize(json, District.class);
+
+        JsonCustomSerializer checkJsonCreation = new JsonCustomSerializer(deserialized);
+        String jsonFromObject = checkJsonCreation.serialize();
+
+        District deserializeFromCustomJson = deserialize(jsonFromObject, District.class);
+    }
+
+    private static <T> T deserialize(String json, Class<?> clazz) throws Exception {
+        JsonCustomDeserializer checkJsonCreation = new JsonCustomDeserializer(json, clazz);
+        return checkJsonCreation.deserialize();
     }
 }
