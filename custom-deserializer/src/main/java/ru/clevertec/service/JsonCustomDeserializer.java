@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
 
-import static java.util.Objects.nonNull;
 import static ru.clevertec.enums.ConstantChars.*;
 
 public class JsonCustomDeserializer {
@@ -77,13 +76,13 @@ public class JsonCustomDeserializer {
 
             if (isListType(currentRawClass)) {
                 createInnerListInstances(jsonValues, currentClass);
-                setValue(type, methodName, innerValues, clazz, source);
+                setValue(type, methodName, innerValues, source);
                 innerValues = new ArrayList<>();
             } else if (isInnerObject(jsonValues[0])) {
                 Object innerObj = createInstance(jsonUtils.parseInnerArray(jsonValues[0]), currentClass);
-                setValue(type, methodName, innerObj, clazz, source);
+                setValue(type, methodName, innerObj, source);
             } else {
-                setValue(type, methodName, jsonValues[0], clazz, source);
+                setValue(type, methodName, jsonValues[0], source);
             }
         }
         return source;
@@ -108,7 +107,8 @@ public class JsonCustomDeserializer {
         }
     }
 
-    private void setValue(Type type, String methodName, Object value, Class<?> sourceClass, Object source) throws Exception {
+    private void setValue(Type type, String methodName, Object value, Object source) throws Exception {
+        Class<?> sourceClass = source.getClass();
         Class<?> currentClass = classService.getInnerClass(type);
         Class<?> rawClass = classService.getRawType(type);
 
