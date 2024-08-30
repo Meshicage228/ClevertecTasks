@@ -15,6 +15,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings(value = "deprecation")
+@DisplayName("Json Custom deserializer tests")
 public class JsonCustomDeserializerTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
