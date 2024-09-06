@@ -108,15 +108,14 @@ public class JsonCustomDeserializer {
 
     private void setValue(Type type, String methodName, Object value, Object source) throws Exception {
         Class<?> sourceClass = source.getClass();
-        Class<?> currentClass = classService.getInnerClass(type);
         Class<?> rawClass = classService.getRawType(type);
 
         if (List.class.isAssignableFrom(rawClass)) {
             Method method = sourceClass.getMethod(methodName, rawClass);
             method.invoke(source, innerValues);
         } else {
-            Method method = sourceClass.getMethod(methodName, currentClass);
-            Object convertedValue = classService.convertValue(value, currentClass);
+            Method method = sourceClass.getMethod(methodName, rawClass);
+            Object convertedValue = classService.convertValue(value, rawClass);
             method.invoke(source, convertedValue);
         }
     }
