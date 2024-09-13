@@ -1,4 +1,5 @@
 rootProject.name = 'ClevertecTasks'
 include ('Gradle-plugin')
 include 'facadePattern'
+include 'chain-observer'
 
