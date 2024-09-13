@@ -120,8 +120,8 @@ public class JsonCustomDeserializerTest {
     }
 
     private <T> T deserializeJson(String json, Class<T> clazz) throws Exception {
-        JsonCustomDeserializer deserializer = new JsonCustomDeserializer(json, clazz);
-        return deserializer.deserialize();
+        JsonCustomDeserializer deserializer = new JsonCustomDeserializer();
+        return deserializer.deserialize(json, clazz);
     }
 
 }

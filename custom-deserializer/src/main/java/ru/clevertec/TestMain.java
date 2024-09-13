@@ -34,14 +34,14 @@ public class TestMain {
 
         District deserialized = deserialize(json, District.class);
 
-        JsonCustomSerializer checkJsonCreation = new JsonCustomSerializer(deserialized);
-        String jsonFromObject = checkJsonCreation.serialize();
+        JsonCustomSerializer checkJsonCreation = new JsonCustomSerializer();
+        String jsonFromObject = checkJsonCreation.serialize(deserialized);
 
         District deserializeFromCustomJson = deserialize(jsonFromObject, District.class);
     }
 
     private static <T> T deserialize(String json, Class<?> clazz) throws Exception {
-        JsonCustomDeserializer checkJsonCreation = new JsonCustomDeserializer(json, clazz);
-        return checkJsonCreation.deserialize();
+        JsonCustomDeserializer checkJsonCreation = new JsonCustomDeserializer();
+        return checkJsonCreation.deserialize(json, clazz);
     }
 }

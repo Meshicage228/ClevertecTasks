@@ -8,8 +8,7 @@ import java.util.function.Predicate;
 import static ru.clevertec.enums.ConstantChars.*;
 import static org.apache.commons.lang3.StringUtils.countMatches;
 
-public class JsonUtils {
-
+public class JsonService {
     private final List<Predicate<String>> handlers = Arrays.asList(
             json -> (countMatches(json, FIGURE_OPENED.getSymbol()) - countMatches(json, FIGURE_CLOSED.getSymbol())) == 0,
             json -> (countMatches(json, SQUARE_OPENED.getSymbol()) - countMatches(json, SQUARE_CLOSED.getSymbol())) == 0,

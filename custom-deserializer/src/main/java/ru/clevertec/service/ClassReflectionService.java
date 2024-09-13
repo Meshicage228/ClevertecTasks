@@ -21,11 +21,15 @@ public class ClassReflectionService {
     public Map<String, Type> collectFieldTypesWithAnnotation(Class<?> clazz) {
         return Arrays.stream(clazz.getDeclaredFields())
                 .collect(Collectors.toMap(
-                        field -> field.isAnnotationPresent(JsonField.class)
-                                ? field.getAnnotation(JsonField.class).jsonField()
-                                : field.getName(),
+                        this::getFieldNameWithAnnotation,
                         Field::getGenericType
                 ));
+    }
+
+    private String getFieldNameWithAnnotation(Field field){
+        return field.isAnnotationPresent(JsonField.class)
+                ? field.getAnnotation(JsonField.class).jsonField()
+                : field.getName();
     }
 
     public Map<String, String> collectAnnotationNameFieldWithActualName(Class<?> clazz){

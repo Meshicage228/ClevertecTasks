@@ -44,7 +44,7 @@ public class JsonCustomSerializerTest {
     }
 
     private String serializeObject(Object object) throws Exception {
-        JsonCustomSerializer deserializer = new JsonCustomSerializer(object);
-        return deserializer.serialize();
+        JsonCustomSerializer deserializer = new JsonCustomSerializer();
+        return deserializer.serialize(object);
     }
 }

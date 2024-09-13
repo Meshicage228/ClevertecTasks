@@ -1,7 +1,7 @@
 package ru.clevertec.service;
 
 import ru.clevertec.exception.KeyMismatchException;
-import ru.clevertec.util.JsonUtils;
+import ru.clevertec.util.JsonService;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -9,27 +9,17 @@ import java.util.*;
 import static ru.clevertec.enums.ConstantChars.*;
 
 public class JsonCustomDeserializer {
-    private final String json;
-
-    private final Class<?> clazz;
-
-    private List<Object> innerValues = new ArrayList<>();
-
     private final ClassReflectionService classService;
+    private final JsonService jsonService;
 
-    private final JsonUtils jsonUtils;
-
-    public JsonCustomDeserializer(String json, Class<?> clazz) {
-        this.clazz = clazz;
-        this.json = json;
-
+    public JsonCustomDeserializer() {
         classService = new ClassReflectionService();
-        jsonUtils = new JsonUtils();
+        jsonService = new JsonService();
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T deserialize() throws Exception {
-        HashMap<String, String[]> jsonMap = jsonUtils.parseJsonIntoMap(json);
+    public <T> T deserialize(String json, Class<?> clazz) throws Exception {
+        HashMap<String, String[]> jsonMap = jsonService.parseJsonIntoMap(json);
 
         Map<String, Type> classFieldMeta = classService.collectFieldTypesWithAnnotation(clazz);
 
@@ -52,7 +42,7 @@ public class JsonCustomDeserializer {
             Class<?> currentRawClass = classService.getRawType(type);
 
             if (classService.isListType(currentRawClass) || isInnerObject(jsonValues[0])) {
-                HashMap<String, String[]> valueMap = jsonUtils.parseInnerArray(jsonValues[0]);
+                HashMap<String, String[]> valueMap = jsonService.parseInnerArray(jsonValues[0]);
 
                 compareJsonAndClassFieldsKeys(valueMap, classService.collectFieldTypesWithAnnotation(innerClass));
             }
@@ -78,11 +68,10 @@ public class JsonCustomDeserializer {
             String methodName = getSetterMethodName(actualFieldName);
 
             if (classService.isListType(currentRawClass)) {
-                createInnerListInstances(jsonValues, currentClass);
-                setValue(type, methodName, innerValues, source);
-                innerValues = new ArrayList<>();
+                ArrayList<Object> innerListInstances = createInnerListInstances(jsonValues, currentClass);
+                setValue(type, methodName, innerListInstances, source);
             } else if (isInnerObject(jsonValues[0])) {
-                Object innerObj = createInstance(jsonUtils.parseInnerArray(jsonValues[0]), currentClass);
+                Object innerObj = createInstance(jsonService.parseInnerArray(jsonValues[0]), currentClass);
                 setValue(type, methodName, innerObj, source);
             } else {
                 setValue(type, methodName, jsonValues[0], source);
@@ -99,11 +88,14 @@ public class JsonCustomDeserializer {
         return jsonValue.contains(SPEC_DELIMITER.toString()) || jsonValue.contains(COLON.toString());
     }
 
-    private void createInnerListInstances(String[] jsonValues, Class<?> currentClass) throws Exception {
+    private ArrayList<Object> createInnerListInstances(String[] jsonValues, Class<?> currentClass) throws Exception {
+        ArrayList<Object> innerValues = new ArrayList<>();
+
         for (String jsonValue : jsonValues) {
-            Object instance = createInstance(jsonUtils.parseInnerArray(jsonValue), currentClass);
+            Object instance = createInstance(jsonService.parseInnerArray(jsonValue), currentClass);
             innerValues.add(instance);
         }
+        return innerValues;
     }
 
     private void setValue(Type type, String methodName, Object value, Object source) throws Exception {
@@ -112,7 +104,7 @@ public class JsonCustomDeserializer {
 
         if (List.class.isAssignableFrom(rawClass)) {
             Method method = sourceClass.getMethod(methodName, rawClass);
-            method.invoke(source, innerValues);
+            method.invoke(source, value);
         } else {
             Method method = sourceClass.getMethod(methodName, rawClass);
             Object convertedValue = classService.convertValue(value, rawClass);

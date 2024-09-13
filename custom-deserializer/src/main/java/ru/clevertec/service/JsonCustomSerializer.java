@@ -9,21 +9,15 @@ import static java.util.Objects.isNull;
 import static ru.clevertec.enums.ConstantChars.*;
 
 public class JsonCustomSerializer {
-
-    private final Object source;
-
     private final ClassReflectionService classService;
-
     private final StringBuilder builder;
 
-    public JsonCustomSerializer(Object source) {
-        this.source = source;
-
+    public JsonCustomSerializer() {
         classService = new ClassReflectionService();
         builder = new StringBuilder();
     }
 
-    public String serialize() throws Exception {
+    public String serialize(Object source) throws Exception {
         String string = serializationProcess(source.getClass(), source);
         return string.replace(",\n}", "\n}").replace(",\n]", "\n]");
     }
