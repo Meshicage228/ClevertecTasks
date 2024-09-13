@@ -10,12 +10,12 @@ import java.util.concurrent.locks.*;
 @Getter
 @Setter
 public class Topic {
+    private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private final Lock readLock = readWriteLock.readLock();
+    private final Lock writeLock = readWriteLock.writeLock();
+    private final Condition condition = writeLock.newCondition();
     private String topicName;
     private ArrayList<Message> messages;
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    private final Lock readLock = lock.readLock();
-    private final Lock writeLock = lock.writeLock();
-    private final Condition condition = writeLock.newCondition();
     private Semaphore semaphore;
 
     public Topic(String topicName, int maxConsumers) {

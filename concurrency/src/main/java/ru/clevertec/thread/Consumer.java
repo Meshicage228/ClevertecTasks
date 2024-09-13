@@ -14,12 +14,13 @@ import java.util.concurrent.TimeUnit;
 public class Consumer extends Thread{
     private Topic topic;
     private CountDownLatch latch;
-    private ArrayList<Message> readMessages = new ArrayList<>();
+    private ArrayList<Message> readMessages;
     private int lastIndex = -1;
 
     public Consumer(Topic topic, CountDownLatch latch) {
         this.topic = topic;
         this.latch = latch;
+        readMessages = new ArrayList<>();
     }
 
     @Override
