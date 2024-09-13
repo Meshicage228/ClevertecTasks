@@ -26,7 +26,7 @@ public class WebAppConfiguration implements WebMvcConfigurer {
     }
 
     @Bean(name = "paymentProvides")
-    Map<String, PaymentProvider> paymentProvides(List<PaymentProvider> paymentProviders){
+    public Map<String, PaymentProvider> paymentProvides(List<PaymentProvider> paymentProviders){
         return paymentProviders
                 .stream()
                 .collect(Collectors.toMap(PaymentProvider::getProviderName, Function.identity()));
