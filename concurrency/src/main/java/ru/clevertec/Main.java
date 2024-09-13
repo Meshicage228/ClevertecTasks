@@ -23,7 +23,8 @@ public class Main {
                 .peek(Thread::start)
                 .toList();
 
-        Thread thread1 = new Thread(group, new Consumer(firstTopic, new CountDownLatch(100)));
+        Consumer consumer = new Consumer(firstTopic, new CountDownLatch(100));
+        Thread thread1 = new Thread(group, consumer);
         thread1.start();
 
         list.forEach(thread -> {

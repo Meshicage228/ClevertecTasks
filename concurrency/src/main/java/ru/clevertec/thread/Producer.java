@@ -14,7 +14,7 @@ public class Producer extends Thread {
         for (int i = 0; i < 20; i++) {
             topic.addMessage("Message " + i);
             try {
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.MILLISECONDS.sleep(20);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
