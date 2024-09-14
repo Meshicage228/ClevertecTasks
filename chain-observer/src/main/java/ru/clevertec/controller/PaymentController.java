@@ -11,7 +11,7 @@ import ru.clevertec.service.providers.PaymentProvider;
 public class PaymentController {
     private final PaymentProvider paymentProvider;
 
-    public PaymentController(@Qualifier("PaymentChain") PaymentProvider paymentProvider) {
+    public PaymentController(@Qualifier("PaymentStartChain") PaymentProvider paymentProvider) {
         this.paymentProvider = paymentProvider;
     }
 

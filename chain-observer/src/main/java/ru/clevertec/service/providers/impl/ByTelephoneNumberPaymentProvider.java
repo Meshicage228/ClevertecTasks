@@ -1,15 +1,18 @@
 package ru.clevertec.service.providers.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.clevertec.dto.PaymentRequest;
 import ru.clevertec.enums.TypesOfPayment;
+import ru.clevertec.service.observers.PaymentObserver;
 import ru.clevertec.service.providers.AbstractPaymentProvider;
 
+import java.util.List;
+
+@Component
 public class ByTelephoneNumberPaymentProvider extends AbstractPaymentProvider {
 
-    @Autowired
-    public ByTelephoneNumberPaymentProvider(AbstractPaymentProvider paymentProvider) {
-        super(paymentProvider);
+    public ByTelephoneNumberPaymentProvider(List<PaymentObserver> observerList) {
+        super(null, observerList);
     }
 
     @Override

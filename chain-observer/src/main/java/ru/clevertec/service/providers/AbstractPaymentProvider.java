@@ -4,18 +4,17 @@ import lombok.Getter;
 import org.springframework.stereotype.Component;
 import ru.clevertec.dto.PaymentRequest;
 import ru.clevertec.service.observers.PaymentObserver;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @Getter
 public abstract class AbstractPaymentProvider implements PaymentProvider{
     private final AbstractPaymentProvider nextProvider;
-    private final List<PaymentObserver> observers = new ArrayList<>();
+    private final List<PaymentObserver> observers;
 
-    public AbstractPaymentProvider(AbstractPaymentProvider nextHandler) {
+    public AbstractPaymentProvider(AbstractPaymentProvider nextHandler, List<PaymentObserver> paymentObservers) {
         this.nextProvider = nextHandler;
+        observers = paymentObservers;
     }
 
     public void handlePayment(PaymentRequest request) {
