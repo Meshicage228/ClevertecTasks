@@ -1,6 +1,8 @@
 package ru.clevertec.commands;
 
-public abstract class Command {
-    protected CommandHist commandHist;
-    public abstract void doSmth();
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public interface Command {
+    String execute(HttpServletRequest request, HttpServletResponse response);
 }
