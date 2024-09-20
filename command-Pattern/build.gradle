@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+}
+
+group = 'ru.clevertec'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    versions = [
+            'servlet' : '3.1.0'
+    ]
+}
+
+dependencies {
+    compileOnly "javax.servlet:javax.servlet-api:${versions.servlet}"
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
