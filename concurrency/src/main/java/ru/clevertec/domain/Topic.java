@@ -36,14 +36,11 @@ public class Topic {
 
     public Message getMessage(int index) throws InterruptedException {
         semaphore.acquire();
+        readLock.lock();
         try {
-            readLock.lock();
-            try {
-                return messages.get(index);
-            } finally {
-                readLock.unlock();
-            }
+            return messages.get(index);
         } finally {
+            readLock.unlock();
             semaphore.release();
         }
     }
