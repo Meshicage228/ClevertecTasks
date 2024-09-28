@@ -1,5 +1,6 @@
 package ru.clevertec.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +12,8 @@ import ru.clevertec.service.providers.PaymentProvider;
 public class PaymentController {
     private final PaymentProvider paymentProvider;
 
-    public PaymentController(@Qualifier("PaymentStartChain") PaymentProvider paymentProvider) {
+    @Autowired
+    public PaymentController(@Qualifier("paymentStartChain") PaymentProvider paymentProvider) {
         this.paymentProvider = paymentProvider;
     }
 

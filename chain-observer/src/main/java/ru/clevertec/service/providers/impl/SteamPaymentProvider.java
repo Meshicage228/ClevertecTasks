@@ -1,18 +1,20 @@
 package ru.clevertec.service.providers.impl;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.clevertec.dto.PaymentRequest;
 import ru.clevertec.enums.TypesOfPayment;
 import ru.clevertec.service.observers.PaymentObserver;
 import ru.clevertec.service.providers.AbstractPaymentProvider;
+import ru.clevertec.service.providers.PaymentProvider;
 
 import java.util.List;
 
-@Component("PaymentStartChain")
+@Component("paymentStartChain")
 public class SteamPaymentProvider extends AbstractPaymentProvider {
 
-    public SteamPaymentProvider(QiwiPaymentProvider paymentProvider, List<PaymentObserver> paymentObserverList) {
-        super(paymentProvider, paymentObserverList);
+    public SteamPaymentProvider(@Qualifier("qiwiPaymentProvider") PaymentProvider nextPaymentProvider, List<PaymentObserver> paymentObserverList) {
+        super(nextPaymentProvider, paymentObserverList);
     }
 
     @Override
@@ -21,7 +23,7 @@ public class SteamPaymentProvider extends AbstractPaymentProvider {
     }
 
     @Override
-    protected void doHandle(PaymentRequest request) {
+    protected void handleProviderPayment(PaymentRequest request) {
         System.out.println("Steam + " + request);
     }
 }

@@ -8,10 +8,10 @@ import ru.clevertec.service.providers.AbstractPaymentProvider;
 
 import java.util.List;
 
-@Component
-public class ByTelephoneNumberPaymentProvider extends AbstractPaymentProvider {
+@Component("telephonePaymentProvider")
+public class TelephoneNumberPaymentProvider extends AbstractPaymentProvider {
 
-    public ByTelephoneNumberPaymentProvider(List<PaymentObserver> observerList) {
+    public TelephoneNumberPaymentProvider(List<PaymentObserver> observerList) {
         super(null, observerList);
     }
 
@@ -21,7 +21,7 @@ public class ByTelephoneNumberPaymentProvider extends AbstractPaymentProvider {
     }
 
     @Override
-    protected void doHandle(PaymentRequest request) {
+    protected void handleProviderPayment(PaymentRequest request) {
         System.out.println("Telephone + " + request);
     }
 }

@@ -9,17 +9,18 @@ import java.util.List;
 @Component
 @Getter
 public abstract class AbstractPaymentProvider implements PaymentProvider{
-    private final AbstractPaymentProvider nextProvider;
+    private final PaymentProvider nextProvider;
     private final List<PaymentObserver> observers;
 
-    public AbstractPaymentProvider(AbstractPaymentProvider nextHandler, List<PaymentObserver> paymentObservers) {
+    public AbstractPaymentProvider(PaymentProvider nextHandler, List<PaymentObserver> paymentObservers) {
         this.nextProvider = nextHandler;
         observers = paymentObservers;
     }
 
+    @Override
     public void handlePayment(PaymentRequest request) {
         if (canHandle(request)) {
-            doHandle(request);
+            handleProviderPayment(request);
             notifyObservers(request);
         } else if (nextProvider != null) {
             nextProvider.handlePayment(request);
@@ -27,7 +28,7 @@ public abstract class AbstractPaymentProvider implements PaymentProvider{
     }
 
     protected abstract boolean canHandle(PaymentRequest request);
-    protected abstract void doHandle(PaymentRequest request);
+    protected abstract void handleProviderPayment(PaymentRequest request);
 
     public void addObserver(PaymentObserver observer) {
         observers.add(observer);
@@ -38,8 +39,6 @@ public abstract class AbstractPaymentProvider implements PaymentProvider{
     }
 
     private void notifyObservers(PaymentRequest request) {
-        for (PaymentObserver observer : observers) {
-            observer.update(request);
-        }
+        observers.forEach(paymentObserver -> paymentObserver.update(request));
     }
 }

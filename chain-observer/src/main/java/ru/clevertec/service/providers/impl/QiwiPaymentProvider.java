@@ -1,18 +1,20 @@
 package ru.clevertec.service.providers.impl;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.clevertec.dto.PaymentRequest;
 import ru.clevertec.enums.TypesOfPayment;
 import ru.clevertec.service.observers.PaymentObserver;
 import ru.clevertec.service.providers.AbstractPaymentProvider;
+import ru.clevertec.service.providers.PaymentProvider;
 
 import java.util.List;
 
-@Component
+@Component("qiwiPaymentProvider")
 public class QiwiPaymentProvider extends AbstractPaymentProvider {
 
-    public QiwiPaymentProvider(ByTelephoneNumberPaymentProvider paymentProvider, List<PaymentObserver> observers) {
-        super(paymentProvider, observers);
+    public QiwiPaymentProvider(@Qualifier("telephonePaymentProvider") PaymentProvider nextPaymentProvider, List<PaymentObserver> observers) {
+        super(nextPaymentProvider, observers);
     }
 
     @Override
@@ -21,7 +23,7 @@ public class QiwiPaymentProvider extends AbstractPaymentProvider {
     }
 
     @Override
-    protected void doHandle(PaymentRequest request) {
+    protected void handleProviderPayment(PaymentRequest request) {
         System.out.println("Qiwi + " + request);
     }
 }
