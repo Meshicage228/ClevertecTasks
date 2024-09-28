@@ -1,8 +1,7 @@
-package ru.clevertec.proxy.realisation;
+package ru.clevertec.proxy;
 
 import ru.clevertec.commands.Command;
 import ru.clevertec.commands.impl.SaveProduct;
-import ru.clevertec.proxy.AbstractProxy;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

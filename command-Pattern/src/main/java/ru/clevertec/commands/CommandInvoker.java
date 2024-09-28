@@ -3,9 +3,9 @@ package ru.clevertec.commands;
 import ru.clevertec.commands.impl.UpdateProduct;
 import ru.clevertec.commands.impl.GetProduct;
 import ru.clevertec.commands.impl.SaveProduct;
-import ru.clevertec.proxy.realisation.GetProductProxy;
-import ru.clevertec.proxy.realisation.SaveProductProxy;
-import ru.clevertec.proxy.realisation.UpdateProductProxy;
+import ru.clevertec.proxy.GetProductProxy;
+import ru.clevertec.proxy.SaveProductProxy;
+import ru.clevertec.proxy.UpdateProductProxy;
 
 import java.util.HashMap;
 import java.util.Optional;

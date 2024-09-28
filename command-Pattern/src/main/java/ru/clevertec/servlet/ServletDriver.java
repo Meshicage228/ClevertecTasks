@@ -1,6 +1,10 @@
 package ru.clevertec.servlet;
 
 import ru.clevertec.commands.CommandInvoker;
+import ru.clevertec.db.DataBaseFactory;
+import ru.clevertec.db.InMemoryDataBase;
+import ru.clevertec.decorator.CashingDecorator;
+import ru.clevertec.decorator.LoggingDecorator;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,6 +20,7 @@ public class ServletDriver extends HttpServlet {
     @Override
     public void init() {
         commandInvoker = new CommandInvoker();
+        DataBaseFactory.getInstance().setDatabase(new CashingDecorator(new LoggingDecorator(new InMemoryDataBase())));
     }
 
     @Override

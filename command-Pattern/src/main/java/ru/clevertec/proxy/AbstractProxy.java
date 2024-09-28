@@ -2,10 +2,7 @@ package ru.clevertec.proxy;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AbstractProxy {
     private final Object proxyObject;
@@ -22,16 +19,13 @@ public class AbstractProxy {
     private void collectInterfacesWithAnnotatedMethods(){
         Class<?> aClass = proxyObject.getClass();
 
-        Class<?>[] interfaces = aClass.getInterfaces();
-
-        for (var inter : interfaces) {
-            for (var meth : inter.getMethods()) {
-                if (meth.isAnnotationPresent(Log.class)) {
-                    annotatedMethods.add(meth.getName());
-                    methods.put(meth.getName(), meth);
-                }
-            }
-        }
+        Arrays.stream(aClass.getInterfaces())
+                .flatMap(inter -> Arrays.stream(inter.getMethods()))
+                .filter(method -> method.isAnnotationPresent(Log.class))
+                .forEach(method -> {
+                    annotatedMethods.add(method.getName());
+                    methods.put(method.getName(), method);
+                });
     }
 
     public Object executeProxyMethod(String methodName, Object... params){
