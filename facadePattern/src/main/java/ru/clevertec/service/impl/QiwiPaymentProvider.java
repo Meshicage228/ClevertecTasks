@@ -1,7 +1,7 @@
 package ru.clevertec.service.impl;
 
 import org.springframework.stereotype.Service;
-import ru.clevertec.enums.TypesOfPayment;
+import ru.clevertec.enums.PaymentType;
 import ru.clevertec.service.PaymentProvider;
 
 @Service
@@ -13,6 +13,6 @@ public class QiwiPaymentProvider implements PaymentProvider {
 
     @Override
     public String getProviderName() {
-        return TypesOfPayment.QIWI.getTypeTitle();
+        return PaymentType.QIWI.getTypeTitle();
     }
 }

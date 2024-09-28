@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum TypesOfPayment {
+public enum PaymentType {
     STEAM ("Steam"),
     QIWI ("Qiwi"),
     TELEPHONE_NUMBER ("Telephone_number");

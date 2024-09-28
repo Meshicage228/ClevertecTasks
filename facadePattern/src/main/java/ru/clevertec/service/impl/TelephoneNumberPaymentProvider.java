@@ -1,11 +1,11 @@
 package ru.clevertec.service.impl;
 
 import org.springframework.stereotype.Service;
-import ru.clevertec.enums.TypesOfPayment;
+import ru.clevertec.enums.PaymentType;
 import ru.clevertec.service.PaymentProvider;
 
 @Service
-public class ByTelephoneNumberPaymentProvider implements PaymentProvider {
+public class TelephoneNumberPaymentProvider implements PaymentProvider {
     @Override
     public String paymentProcess(String message, Double check) {
         return message + " by " + getProviderName() + " check : " + check;
@@ -13,6 +13,6 @@ public class ByTelephoneNumberPaymentProvider implements PaymentProvider {
 
     @Override
     public String getProviderName() {
-        return TypesOfPayment.TELEPHONE_NUMBER.getTypeTitle();
+        return PaymentType.TELEPHONE_NUMBER.getTypeTitle();
     }
 }
