@@ -1,0 +1,459 @@
+swagger: "2.0"
+info:
+  version: "1.0"
+  title: "REST-API web-service : channel video hosting"
+host: "localhost"
+basePath: "/v1"
+tags:
+  - name: "user"
+    description: "All available actions for users"
+  - name: "channel"
+    description: "All available actions for channels"
+schemes:
+  - "http"
+
+paths:
+  /users:
+    post:
+      tags:
+        - "user"
+      summary: "creates new user"
+      description: "lala"
+      operationId: "addUser"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User object that will be added to app"
+          required: true
+          schema:
+            $ref: '#/definitions/User-no-id'
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        201:
+          description: "user was successfully created"
+          schema:
+            $ref: '#/definitions/User'
+        405:
+          description: "invalid input"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        409:
+          description: "user already exists"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        500:
+          description: "internal server error"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+  /users/{userId}:
+   put:
+     tags:
+       - "user"
+     summary: "updates existing user"
+     description: "get"
+     operationId: "full update existing user"
+     parameters:
+       - in: "path"
+         name: "userId"
+         description: "id to find user to be updated"
+         required: true
+         type: integer
+         format: int32
+       - in: "body"
+         name: "updateBody"
+         description: "that info will replace existing data"
+         required: true
+         schema:
+           $ref: '#/definitions/User-no-id'
+     consumes:
+       - "application/json"
+     produces:
+       - "application/json"
+     responses:
+       200:
+         description: "user was successfully updated"
+         schema:
+           $ref: '#/definitions/User'
+       404:
+         description: "user with that id wasn't found"
+         schema:
+           $ref: "#/definitions/ApiResponse"
+       405:
+         description: "invalid input"
+         schema:
+           $ref: "#/definitions/ApiResponse"
+       500:
+         description: "internal server error"
+         schema:
+           $ref: "#/definitions/ApiResponse"
+  /users/{userId}/channels:
+    get:
+      tags:
+        - "user"
+      summary: "get subscribed channels names"
+      description: "getting the names of all the user's channels to which he is subscribed"
+      operationId: "get all channels titles"
+      parameters:
+        - in: "path"
+          name: "userId"
+          minimum: 1
+          description: "id to find user"
+          required: true
+          type: integer
+          format: int32
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "info was successfully given"
+          schema:
+            type: array
+            items:
+              title: "title"
+        404:
+          description: "user with that id wasn't found"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        500:
+          description: "internal server error"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+  /users/{userId}/subscriptions/{channelId}:
+    post:
+      tags:
+        - "user"
+      summary: "subscribes user to channel"
+      description: "subscribes user from specific channel"
+      operationId: "subscribeUser"
+      parameters:
+        - in: "path"
+          type: integer
+          format: int64
+          name: "userId"
+          required: true
+          maximum: 1
+          description: "For this user will be added subscription"
+        - in: "path"
+          type: integer
+          format: int32
+          name: "channelId"
+          required: true
+          maximum: 1
+          description: "This channel will be subscribed"
+      responses:
+        201:
+          description: User subscribed to channel
+        400:
+          description: User already subscribed to channel
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        404:
+          description: "resource wasn't found"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        500:
+          description: "internal server error"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+    delete:
+      tags:
+        - "user"
+      summary: "unsubscribes user from channel"
+      description: "unsubscribes user from specific channel"
+      operationId: "unsubscribeUser"
+      parameters:
+        - in: "path"
+          type: integer
+          format: int64
+          name: "userId"
+          required: true
+          maximum: 1
+          description: "For this user will be deleted subscription"
+        - in: "path"
+          type: integer
+          format: int32
+          name: "channelId"
+          required: true
+          maximum: 1
+          description: "This channel will be unsubscribed"
+      responses:
+        200:
+          description: "channel was successfully unsubscribed"
+        404:
+          description: "resource wasn't found"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        405:
+          description: "invalid input for update"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        500:
+          description: "internal server error"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+
+  /channels:
+    post:
+      tags:
+        - "channel"
+      summary: "creates new channel"
+      description: "create channel"
+      operationId: "addChannel"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Channel object that will be added to app"
+          required: true
+          schema:
+            $ref: '#/definitions/Channel'
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        201:
+          description: "channel was successfully created"
+          schema:
+            $ref: '#/definitions/Channel'
+        405:
+          description: "invalid input"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        409:
+          description: "that channel already exists"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        500:
+          description: "internal server error"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+    get:
+      tags:
+        - "channel"
+      summary: "List of channels using filtration and pagination"
+      description: "Getting list of channels with filtration and pagination"
+      operationId: "channelList"
+      parameters:
+        - in: "query"
+          name: name
+          schema:
+            type: string
+          description: Filter by channel name
+        - in: "query"
+          name: language
+          schema:
+            type: string
+          description: Filter by channel language
+        - in: "query"
+          name: category
+          schema:
+            type: string
+          description: Filter by channel category
+        - in: "query"
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+          description: Page number
+        - in: "query"
+          name: size
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 25
+          description: Page size from 1 to 25
+      responses:
+        200:
+          description: List of channels
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ChannelSummary'
+  /channel/{channelId}:
+    put:
+      tags:
+        - "channel"
+      summary: "updates existing channel"
+      description: "update channel"
+      operationId: "channelUpdate"
+      parameters:
+        - in: "path"
+          name: "channelId"
+          minimum: 1
+          description: "id to find channel to be updated"
+          required: true
+          type: integer
+          format: int32
+        - in: "body"
+          name: "updateBody"
+          description: "that info will replace existing data"
+          required: true
+          schema:
+            $ref: '#/definitions/Channel'
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "channel was successfully updated"
+          schema:
+            $ref: '#/definitions/Channel'
+        404:
+          description: "channel with that id wasn't found"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        405:
+          description: "invalid input for update"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        500:
+          description: "internal server error"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+    get:
+      tags:
+        - "channel"
+      summary: "get channel"
+      description: "getting info about specific channel"
+      operationId: "getChannel"
+      parameters:
+        - in: "path"
+          name: "channelId"
+          minimum: 1
+          description: "id to find channel"
+          required: true
+          type: integer
+          format: int32
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "info was successfully given"
+          schema:
+            $ref: "#/definitions/Channel"
+        404:
+          description: "user with that id wasn't found"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        500:
+          description: "internal server error"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+
+definitions:
+    Channel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: Film review
+        author:
+          $ref: '#/definitions/User'
+        subscribers:
+          $ref: '#/definitions/UserArray'
+        shortDescription:
+          type: string
+          example: Here you can track all latest reviews
+        creationDate:
+          type: string
+          format: date-time
+          example: '2022-12-12'
+        category:
+          $ref: '#/definitions/Category'
+        language:
+          type: string
+          example: RU
+        avatar:
+          format: byte
+      xml:
+        name: channel
+    User-no-id:
+      type: object
+      properties:
+        nickname:
+          type: string
+          example: meshicage
+        name:
+          type: string
+          example: Vlad
+        email:
+          type: string
+          format: email
+          example: meshicage@yandex.ru
+      xml:
+        name: user
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 11a32b4f-8ff0-4676-830c-986b90a4b7df
+        nickname:
+          type: string
+          example: meshicage
+        name:
+          type: string
+          example: Vlad
+        email:
+          type: string
+          format: email
+          example: meshicage@yandex.ru
+      xml:
+        name: user
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: FILM
+      xml:
+        name: category
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    UserArray:
+      type: array
+      xml:
+        wrapped: true
+        name: array
+      items:
+        $ref: '#/definitions/User'
+    ChannelSummary:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Film review
+        subscribersCount:
+          type: integer
+          format: int64
+          example: 120
+        category:
+          $ref: '#/definitions/Category'
+        language:
+          type: string
+          example: RU
+        avatar:
+          format: byte
