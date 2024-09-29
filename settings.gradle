@@ -1,4 +1,8 @@
 rootProject.name = 'ClevertecTasks'
 include ('Gradle-plugin')
 include 'concurrency'
+include 'custom-deserializer'
+include 'facadePattern'
+include 'chain-observer'
+include 'command-Pattern'
 
