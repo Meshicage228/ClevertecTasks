@@ -13,17 +13,17 @@ schemes:
   - "http"
 
 paths:
-  /users:
+  /v1/users:
     post:
       tags:
         - "user"
       summary: "creates new user"
-      description: "lala"
+      description: "creates new user with provided info"
       operationId: "addUser"
       parameters:
         - in: "body"
           name: "body"
-          description: "User object that will be added to app"
+          description: "user object that will be added to app"
           required: true
           schema:
             $ref: '#/definitions/User-no-id'
@@ -36,32 +36,34 @@ paths:
           description: "user was successfully created"
           schema:
             $ref: '#/definitions/User'
-        405:
+        400:
           description: "invalid input"
           schema:
-            $ref: "#/definitions/ApiResponse"
+            properties:
+              message:
+                type: string
+                example: "invalid input"
         409:
-          description: "user already exists"
+          description: "that user already exists"
           schema:
-            $ref: "#/definitions/ApiResponse"
-        500:
-          description: "internal server error"
-          schema:
-            $ref: "#/definitions/ApiResponse"
-  /users/{userId}:
+            properties:
+              message:
+                type: "string"
+                example: "user with that info already exists"
+  /v1/users/{userId}:
    put:
      tags:
        - "user"
      summary: "updates existing user"
-     description: "get"
-     operationId: "full update existing user"
+     description: "updating existing user by provided info"
+     operationId: "updateUser"
      parameters:
        - in: "path"
          name: "userId"
          description: "id to find user to be updated"
          required: true
-         type: integer
-         format: int32
+         type: string
+         format: uuid
        - in: "body"
          name: "updateBody"
          description: "that info will replace existing data"
@@ -80,16 +82,25 @@ paths:
        404:
          description: "user with that id wasn't found"
          schema:
-           $ref: "#/definitions/ApiResponse"
+           properties:
+             message :
+               type: string
+               example: "provided user wasn't found"
        405:
          description: "invalid input"
          schema:
-           $ref: "#/definitions/ApiResponse"
-       500:
-         description: "internal server error"
+           properties:
+             message :
+               type: string
+               example: "invalid input"
+       409:
+         description: "that user already exists"
          schema:
-           $ref: "#/definitions/ApiResponse"
-  /users/{userId}/channels:
+           properties:
+             message:
+               type: "string"
+               example: "user with that info already exists"
+  /v1/users/{userId}/channels:
     get:
       tags:
         - "user"
@@ -102,8 +113,8 @@ paths:
           minimum: 1
           description: "id to find user"
           required: true
-          type: integer
-          format: int32
+          type: string
+          format: uuid
       consumes:
         - "application/json"
       produces:
@@ -115,61 +126,79 @@ paths:
             type: array
             items:
               title: "title"
+              example: "channel title"
+        403:
+          description: "access denied due to lack of permissions"
+          schema:
+            properties:
+              message:
+                type: string
+                example: "access denied due to lack of permissions"
         404:
           description: "user with that id wasn't found"
           schema:
-            $ref: "#/definitions/ApiResponse"
-        500:
-          description: "internal server error"
-          schema:
-            $ref: "#/definitions/ApiResponse"
-  /users/{userId}/subscriptions/{channelId}:
+            properties:
+              message :
+                type: string
+                example: "provided user wasn't found"
+  /v1/users/{userId}/subscriptions/{channelId}:
     post:
       tags:
         - "user"
       summary: "subscribes user to channel"
       description: "subscribes user from specific channel"
       operationId: "subscribeUser"
+      produces:
+        - application/json
       parameters:
         - in: "path"
-          type: integer
-          format: int64
+          type: string
+          format: uuid
           name: "userId"
           required: true
-          maximum: 1
           description: "For this user will be added subscription"
         - in: "path"
           type: integer
           format: int32
           name: "channelId"
           required: true
-          maximum: 1
           description: "This channel will be subscribed"
       responses:
         201:
           description: User subscribed to channel
-        400:
-          description: User already subscribed to channel
+        403:
+          description: "access denied due to lack of permissions"
           schema:
-            $ref: "#/definitions/ApiResponse"
+            properties:
+              message :
+                type: string
+                example: "access denied due to lack of permissions"
         404:
-          description: "resource wasn't found"
+          description: "provided channel wasn't found"
           schema:
-            $ref: "#/definitions/ApiResponse"
-        500:
-          description: "internal server error"
+            properties:
+              message :
+                type: string
+                example: "provided channel wasn't found"
+        409:
+          description: "already subscribed"
           schema:
-            $ref: "#/definitions/ApiResponse"
+            properties:
+              message:
+                type: "string"
+                example: "that user already have subscribed"
     delete:
       tags:
         - "user"
       summary: "unsubscribes user from channel"
       description: "unsubscribes user from specific channel"
       operationId: "unsubscribeUser"
+      produces:
+        - application/json
       parameters:
         - in: "path"
-          type: integer
-          format: int64
+          type: string
+          format: uuid
           name: "userId"
           required: true
           maximum: 1
@@ -182,56 +211,81 @@ paths:
           maximum: 1
           description: "This channel will be unsubscribed"
       responses:
-        200:
+        204:
           description: "channel was successfully unsubscribed"
+        403:
+          description: "access denied due to lack of permissions"
+          schema:
+            properties:
+              message:
+                type: string
+                example: "access denied due to lack of permissions"
         404:
-          description: "resource wasn't found"
+          description: "subscription wasn't found"
           schema:
-            $ref: "#/definitions/ApiResponse"
-        405:
-          description: "invalid input for update"
-          schema:
-            $ref: "#/definitions/ApiResponse"
-        500:
-          description: "internal server error"
-          schema:
-            $ref: "#/definitions/ApiResponse"
+            properties:
+              message:
+                type: "string"
+                example: "subscription wasn't found"
 
-  /channels:
+  /v1/channels:
     post:
       tags:
         - "channel"
       summary: "creates new channel"
       description: "create channel"
       operationId: "addChannel"
-      parameters:
-        - in: "body"
-          name: "body"
-          description: "Channel object that will be added to app"
-          required: true
-          schema:
-            $ref: '#/definitions/Channel'
       consumes:
         - "application/json"
       produces:
         - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "channel object that will be added to app"
+          required: true
+          schema:
+            properties:
+              title:
+                type: string
+                example: "Film review"
+              shortDescription:
+                type: string
+                example: "Here you can track all latest reviews"
+              category:
+                type: string
+                example: "Film"
+              language:
+                type: string
+                example: "RU"
+              avatar:
+                format: byte
       responses:
         201:
           description: "channel was successfully created"
           schema:
             $ref: '#/definitions/Channel'
-        405:
+        400:
           description: "invalid input"
           schema:
-            $ref: "#/definitions/ApiResponse"
+            properties:
+              message:
+                type: string
+                example: "invalid input"
+        403:
+          description: "access denied due to lack of permissions"
+          schema:
+            properties:
+              message:
+                type: string
+                example: "access denied due to lack of permissions"
         409:
           description: "that channel already exists"
           schema:
-            $ref: "#/definitions/ApiResponse"
-        500:
-          description: "internal server error"
-          schema:
-            $ref: "#/definitions/ApiResponse"
+            properties:
+              message:
+                type: "string"
+                example: "that channel already exists"
     get:
       tags:
         - "channel"
@@ -240,33 +294,29 @@ paths:
       operationId: "channelList"
       parameters:
         - in: "query"
-          name: name
-          schema:
-            type: string
-          description: Filter by channel name
-        - in: "query"
-          name: language
-          schema:
-            type: string
-          description: Filter by channel language
-        - in: "query"
-          name: category
-          schema:
-            type: string
-          description: Filter by channel category
-        - in: "query"
           name: page
-          schema:
-            type: integer
-            minimum: 0
-          description: Page number
+          type: integer
+          format: int64
+          minimum: 1
+          description: number of page
         - in: "query"
           name: size
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 25
-          description: Page size from 1 to 25
+          type: integer
+          format: int64
+          minimum: 1
+          description: size of page
+        - in: "query"
+          name: title
+          type: string
+          description: query path param for filter
+        - in: "query"
+          name: language
+          type: string
+          description: query path param for filter
+        - in: "query"
+          name: category
+          type: string
+          description: query path param for filter
       responses:
         200:
           description: List of channels
@@ -274,7 +324,15 @@ paths:
             type: array
             items:
               $ref: '#/definitions/ChannelSummary'
-  /channel/{channelId}:
+        403:
+          description: "access denied due to lack of permissions"
+          schema:
+            properties:
+              message:
+                type: string
+                example: "access denied due to lack of permissions"
+
+  /v1/channel/{channelId}:
     put:
       tags:
         - "channel"
@@ -294,7 +352,7 @@ paths:
           description: "that info will replace existing data"
           required: true
           schema:
-            $ref: '#/definitions/Channel'
+            $ref: '#/definitions/Channel-update'
       consumes:
         - "application/json"
       produces:
@@ -303,19 +361,28 @@ paths:
         200:
           description: "channel was successfully updated"
           schema:
-            $ref: '#/definitions/Channel'
+            $ref: '#/definitions/Channel-update'
+        400:
+          description: "invalid input for update"
+          schema:
+            properties:
+              message:
+                type: string
+                example: "invalid input"
+        403:
+          description: "access denied due to lack of permissions"
+          schema:
+            properties:
+              message:
+                type: string
+                example: "access denied due to lack of permissions"
         404:
           description: "channel with that id wasn't found"
           schema:
-            $ref: "#/definitions/ApiResponse"
-        405:
-          description: "invalid input for update"
-          schema:
-            $ref: "#/definitions/ApiResponse"
-        500:
-          description: "internal server error"
-          schema:
-            $ref: "#/definitions/ApiResponse"
+            properties:
+              message:
+                type: "string"
+                example: "provided channel wasn't found"
     get:
       tags:
         - "channel"
@@ -339,14 +406,20 @@ paths:
           description: "info was successfully given"
           schema:
             $ref: "#/definitions/Channel"
+        403:
+          description: "access denied due to lack of permissions"
+          schema:
+            properties:
+              message:
+                type: string
+                example: "access denied due to lack of permissions"
         404:
           description: "user with that id wasn't found"
           schema:
-            $ref: "#/definitions/ApiResponse"
-        500:
-          description: "internal server error"
-          schema:
-            $ref: "#/definitions/ApiResponse"
+            properties:
+              message:
+                type: "string"
+                example: "user with that id wasn't found"
 
 definitions:
     Channel:
@@ -379,6 +452,30 @@ definitions:
           format: byte
       xml:
         name: channel
+    Channel-update:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Film review
+        author:
+          $ref: '#/definitions/User'
+        shortDescription:
+          type: string
+          example: Here you can track all latest reviews
+        creationDate:
+          type: string
+          format: date-time
+          example: '2022-12-12'
+        category:
+          $ref: '#/definitions/Category'
+        language:
+          type: string
+          example: RU
+        avatar:
+          format: byte
+      xml:
+        name: channel-update
     User-no-id:
       type: object
       properties:
@@ -425,14 +522,6 @@ definitions:
           example: FILM
       xml:
         name: category
-    ApiResponse:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
     UserArray:
       type: array
       xml:
