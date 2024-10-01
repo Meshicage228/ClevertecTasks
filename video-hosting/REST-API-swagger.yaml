@@ -33,7 +33,7 @@ paths:
         - "application/json"
       responses:
         201:
-          description: "user was successfully created"
+          description: "user was successfully created : return with generated id"
           schema:
             $ref: '#/definitions/User'
         400:
@@ -76,7 +76,7 @@ paths:
        - "application/json"
      responses:
        200:
-         description: "user was successfully updated"
+         description: "user was successfully updated : returns with id"
          schema:
            $ref: '#/definitions/User'
        404:
@@ -100,13 +100,13 @@ paths:
              message:
                type: "string"
                example: "user with that info already exists"
-  /v1/users/{userId}/channels:
+  /v1/users/{userId}/subscriptions:
     get:
       tags:
         - "user"
       summary: "get subscribed channels names"
       description: "getting the names of all the user's channels to which he is subscribed"
-      operationId: "get all channels titles"
+      operationId: "get all subscribed channels titles"
       parameters:
         - in: "path"
           name: "userId"
@@ -186,7 +186,7 @@ paths:
             properties:
               message:
                 type: "string"
-                example: "that user already have subscribed"
+                example: "user already have subscribed"
     delete:
       tags:
         - "user"
@@ -233,7 +233,7 @@ paths:
       tags:
         - "channel"
       summary: "creates new channel"
-      description: "create channel"
+      description: "creates channel with provided info"
       operationId: "addChannel"
       consumes:
         - "application/json"
@@ -241,8 +241,8 @@ paths:
         - "application/json"
       parameters:
         - in: "body"
-          name: "body"
-          description: "channel object that will be added to app"
+          name: "channelInfo"
+          description: "Channel object that will be added to app"
           required: true
           schema:
             properties:
@@ -337,7 +337,7 @@ paths:
       tags:
         - "channel"
       summary: "updates existing channel"
-      description: "update channel"
+      description: "updates channel with provided info"
       operationId: "channelUpdate"
       parameters:
         - in: "path"
@@ -424,6 +424,12 @@ paths:
 definitions:
     Channel:
       type: object
+      required:
+        - title
+        - shortDescription
+        - category
+        - avatar
+        - language
       properties:
         id:
           type: integer
@@ -478,6 +484,10 @@ definitions:
         name: channel-update
     User-no-id:
       type: object
+      required:
+        - nickname
+        - name
+        - email
       properties:
         nickname:
           type: string
@@ -511,6 +521,8 @@ definitions:
       xml:
         name: user
     Category:
+      required:
+        - name
       type: object
       properties:
         id:
