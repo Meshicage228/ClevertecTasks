@@ -103,7 +103,7 @@ paths:
        - "user"
      summary: "updates existing user"
      description: "updates user with one of provided field info"
-     operationId: "updateUser"
+     operationId: "userPatchUpdate"
      parameters:
        - in: "path"
          name: "userId"
@@ -417,7 +417,7 @@ paths:
         - "channel"
       summary: "updates existing channel"
       description: "updates channel with one of provided field info"
-      operationId: "channelUpdate"
+      operationId: "channelPatchUpdate"
       parameters:
         - in: "path"
           name: "channelId"
