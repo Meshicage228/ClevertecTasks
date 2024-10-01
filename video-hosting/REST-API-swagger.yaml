@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   version: "1.0"
   title: "REST-API web-service : channel video hosting"
-host: "localhost"
+host: "localhost:8080"
 basePath: "/v1"
 tags:
   - name: "user"
@@ -26,7 +26,7 @@ paths:
           description: "user object that will be added to app"
           required: true
           schema:
-            $ref: '#/definitions/User-no-id'
+            $ref: '#/definitions/User-input'
       consumes:
         - "application/json"
       produces:
@@ -69,16 +69,14 @@ paths:
          description: "that info will replace existing data"
          required: true
          schema:
-           $ref: '#/definitions/User-no-id'
+           $ref: '#/definitions/User-input'
      consumes:
        - "application/json"
      produces:
        - "application/json"
      responses:
-       200:
-         description: "user was successfully updated : returns with id"
-         schema:
-           $ref: '#/definitions/User'
+       204:
+         description: "user was successfully updated"
        404:
          description: "user with that id wasn't found"
          schema:
@@ -91,6 +89,53 @@ paths:
          schema:
            properties:
              message :
+               type: string
+               example: "invalid input"
+       409:
+         description: "that user already exists"
+         schema:
+           properties:
+             message:
+               type: "string"
+               example: "user with that info already exists"
+   patch:
+     tags:
+       - "user"
+     summary: "updates existing user"
+     description: "updates user with one of provided field info"
+     operationId: "updateUser"
+     parameters:
+       - in: "path"
+         name: "userId"
+         description: "id to find user to be updated"
+         required: true
+         type: string
+         format: uuid
+       - in: "body"
+         name: "updateBody"
+         description: "use one of that fields to replace existing data"
+         required: true
+         schema:
+           $ref: '#/definitions/User-input'
+     consumes:
+       - "application/json"
+     produces:
+       - "application/json"
+     responses:
+       204:
+         description: "user was successfully updated"
+       404:
+         description: "user with that id wasn't found"
+         schema:
+           properties:
+             message:
+               type: string
+               example: "provided user wasn't found"
+       405:
+         description: "invalid input"
+         schema:
+           properties:
+             message:
                type: string
                example: "invalid input"
        409:
@@ -245,21 +290,7 @@ paths:
           description: "Channel object that will be added to app"
           required: true
           schema:
-            properties:
-              title:
-                type: string
-                example: "Film review"
-              shortDescription:
-                type: string
-                example: "Here you can track all latest reviews"
-              category:
-                type: string
-                example: "Film"
-              language:
-                type: string
-                example: "RU"
-              avatar:
-                format: byte
+            $ref: '#/definitions/Channel-input'
       responses:
         201:
           description: "channel was successfully created"
@@ -352,16 +383,62 @@ paths:
           description: "that info will replace existing data"
           required: true
           schema:
-            $ref: '#/definitions/Channel-update'
+            $ref: '#/definitions/Channel-input'
       consumes:
         - "application/json"
       produces:
         - "application/json"
       responses:
-        200:
+        204:
           description: "channel was successfully updated"
+        400:
+          description: "invalid input for update"
           schema:
-            $ref: '#/definitions/Channel-update'
+            properties:
+              message:
+                type: string
+                example: "invalid input"
+        403:
+          description: "access denied due to lack of permissions"
+          schema:
+            properties:
+              message:
+                type: string
+                example: "access denied due to lack of permissions"
+        404:
+          description: "channel with that id wasn't found"
+          schema:
+            properties:
+              message:
+                type: "string"
+                example: "provided channel wasn't found"
+    patch:
+      tags:
+        - "channel"
+      summary: "updates existing channel"
+      description: "updates channel with one of provided field info"
+      operationId: "channelUpdate"
+      parameters:
+        - in: "path"
+          name: "channelId"
+          minimum: 1
+          description: "id to find channel to be updated"
+          required: true
+          type: integer
+          format: int32
+        - in: "body"
+          name: "updateBody"
+          description: "use one of the fields to update existing channel"
+          required: true
+          schema:
+            $ref: '#/definitions/Channel-input'
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        204:
+          description: "channel was successfully updated"
         400:
           description: "invalid input for update"
           schema:
@@ -458,31 +535,31 @@ definitions:
           format: byte
       xml:
         name: channel
-    Channel-update:
-      type: object
+    Channel-input:
+      required:
+        - title
+        - shortDescription
+        - category
+        - language
+        - avatar
       properties:
-        title:
-          type: string
-          example: Film review
-        author:
-          $ref: '#/definitions/User'
-        shortDescription:
-          type: string
-          example: Here you can track all latest reviews
-        creationDate:
-          type: string
-          format: date-time
-          example: '2022-12-12'
-        category:
-          $ref: '#/definitions/Category'
-        language:
-          type: string
-          example: RU
-        avatar:
-          format: byte
+          title:
+            type: string
+            example: "Film review"
+          shortDescription:
+            type: string
+            example: "Here you can track all latest reviews"
+          category:
+            type: string
+            example: "Film"
+          language:
+            type: string
+            example: "RU"
+          avatar:
+            format: byte
       xml:
-        name: channel-update
-    User-no-id:
+        name: channel-input
+    User-input:
       type: object
       required:
         - nickname
