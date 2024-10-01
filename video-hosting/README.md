@@ -121,9 +121,9 @@ Response Example :
        "message": "user with that info already exists"
     }
 ```
-<p align="right" style="font-size: 17px">([Go up](#readme-top))</p>
--
----
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <a id = "put-users">2)</a> `PUT` /v1/users/{userId}
 
 First you should introduce path variable : for example `/v1/users/1`
@@ -168,9 +168,7 @@ Response Example :
     }
 ```
 
-<p align="right" style="font-size: 17px">([Go up](#readme-top))</p>
--
----
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <a id = "patch-users">3)</a> `PATCH` /v1/users/{userId}
 
@@ -219,9 +217,8 @@ Response Example :
        "message": "user with that info already exists"
     }
 ```
-<p align="right" style="font-size: 17px">([Go up](#readme-top))</p>
--
----
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <a id = "get-users-sub">4)</a> `GET` /v1/users/{userId}/subscriptions
 
 Get the names of all the user's channels to which he is subscribed
@@ -253,9 +250,8 @@ Response Example :
         "message": "provided user wasn't found"
     }
 ```
-<p align="right" style="font-size: 17px">([Go up](#readme-top))</p>
--
----
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <a id = "post-users-sub">5)</a> `POST` /v1/users/{userId}/subscriptions/{channelId}
 
 Subscribes user to provided channel
@@ -291,9 +287,8 @@ Response Example :
        "message": "user already have subscribed"
     }
 ```
-<p align="right" style="font-size: 17px">([Go up](#readme-top))</p>
--
----
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <a id = "delete-users-sub">6)</a> `DELETE` /v1/users/{userId}/subscriptions/{channelId}
 
 Unsubscribes user from provided channel
@@ -320,9 +315,8 @@ Response Example :
         "message": "provided channel wasn't found"
     }
 ```
-<p align="right" style="font-size: 17px">([Go up](#readme-top))</p>
--
----
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## `Channel` group endpoints
 <a id = "post-channels">1)</a>`POST` /v1/channels
@@ -399,9 +393,7 @@ Response Example :
         "message": "that channel already exists"
     }
 ```
-<p align="right" style="font-size: 17px">([Go up](#readme-top))</p>
--
----
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <a id = "get-channels-filter">2)</a>`GET` /v1/channels
 
