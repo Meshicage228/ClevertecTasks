@@ -3,7 +3,7 @@ info:
   version: "1.0"
   title: "REST-API web-service : channel video hosting"
 host: "localhost:8080"
-basePath: "/v1"
+basePath: "/api"
 tags:
   - name: "user"
     description: "All available actions for users"
@@ -150,7 +150,7 @@ paths:
       tags:
         - "user"
       summary: "get subscribed channels names"
-      description: "getting the names of all the user's channels to which he is subscribed"
+      description: "get the names of all the user's channels to which he is subscribed"
       operationId: "get all subscribed channels titles"
       parameters:
         - in: "path"
@@ -191,7 +191,7 @@ paths:
       tags:
         - "user"
       summary: "subscribes user to channel"
-      description: "subscribes user from specific channel"
+      description: "subscribes user to specific channel"
       operationId: "subscribeUser"
       produces:
         - application/json
@@ -321,7 +321,7 @@ paths:
       tags:
         - "channel"
       summary: "List of channels using filtration and pagination"
-      description: "Getting list of channels with filtration and pagination"
+      description: "get list of channels with filtration and pagination"
       operationId: "channelList"
       parameters:
         - in: "query"
@@ -464,7 +464,7 @@ paths:
       tags:
         - "channel"
       summary: "get channel"
-      description: "getting info about specific channel"
+      description: "get info about specific channel"
       operationId: "getChannel"
       parameters:
         - in: "path"
@@ -491,12 +491,12 @@ paths:
                 type: string
                 example: "access denied due to lack of permissions"
         404:
-          description: "user with that id wasn't found"
+          description: "channel with that id wasn't found"
           schema:
             properties:
               message:
                 type: "string"
-                example: "user with that id wasn't found"
+                example: "channel with that id wasn't found"
 
 definitions:
     Channel:
