@@ -1,7 +1,7 @@
 # REST-API web-service : channel video hosting
 <a id="readme-top"></a>
 
-# This text documentation of this rest-api
+# This rest-api text documentation
 
 `FULL SWAGGER DOCUMENTATION YOU CAN FIND HERE :` https://meshicage228.github.io/ClevertecTasks/ 
 
@@ -11,7 +11,7 @@
 1. `User`. User model has the following structure : 
 ```
     {
-        "id" : 11a32b4f-8ff0-4676-830c-986b90a4b7df,  // UUID
+        "id" : "11a32b4f-8ff0-4676-830c-986b90a4b7df",  // UUID
         "nickname" : "meshicage",                     // String
         "name" : "Vlad",                              // String
         "email" : "meshicage@yandex.ru"               // string($email)
@@ -30,14 +30,14 @@
         "id" : 1,	               // Integer($int64)
         "title" : "Film-channel",      // String
         "author" : 	{              // Object User
-               "id" : 11a32b4f-8ff0-4676-830c-986b90a4b7df, 
+               "id" : "11a32b4f-8ff0-4676-830c-986b90a4b7df", 
                "nickname" : "meshicage",                     
                "name" : "Vlad",                             
                "email" : "meshicage@yandex.ru" 
         },
         "subscribers" : [               // Array of Object : User
         	{
-        	   "id" : 11a32b4f-8ff0-4676-830c-986b90a4b7df, 
+        	   "id" : "11a32b4f-8ff0-4676-830c-986b90a4b7df", 
                "nickname" : "meshicage",                     
                "name" : "Vlad",                             
                "email" : "meshicage@yandex.ru" 
@@ -231,6 +231,8 @@ Get the names of all the user's channels to which he is subscribed
 
 First you should introduce path variable : for example `/v1/users/11a32b4f-8ff0-4676-830c-986b90a4b7df`
 
+`Responses: `
+
 `200`: info was successfully given
 
 Response Example :
@@ -267,6 +269,8 @@ Subscribes user to provided channel
 First you should introduce {userId} and {channelId} path variable : 
 
 For example `/v1/users/11a32b4f-8ff0-4676-830c-986b90a4b7df/subscriptions/1`
+
+`Responses: `
 
 `201`: User subscribed to channel
 
@@ -307,6 +311,8 @@ First you should introduce {userId} and {channelId} path variable :
 
 For example `/v1/users/11a32b4f-8ff0-4676-830c-986b90a4b7df/subscriptions/1`
 
+`Responses: `
+
 `204`: channel was successfully unsubscribed
 
 `403`: Access denied due to lack of permissions
@@ -346,6 +352,8 @@ All fields are required !
        "avatar": "string"
     }
 ```
+
+`Responses: `
 
 `201`: channel was successfully created
 
@@ -411,8 +419,208 @@ Response Example :
 
 <a id = "get-channels-filter">2)</a>`GET` /v1/channels
 
+Getting list of channels with filtration and pagination
+
+url example: 
+
+/v1/channels?page=1&size=10&title=film%20reviews&language=ru&category=Film
+
+you provide `page number`, `size` of that page and 3 filters : `title`, `language`, `category`
+
+filters are not necessary
+
+`200`: List of channels
+
+Response Example : returns short info about channel
+
+```
+     [
+        {
+           "title": "Film review",
+           "subscribersCount": 120,
+           "category": {
+               "id": 1,
+               "name": "FILM"
+           },
+          "language": "RU",
+          "avatar": "string"
+       }
+    ]
+```
+
+`403`: Access denied due to lack of permissions
+
+Response Example :
+```
+    {
+        "message": "access denied due to lack of permissions"
+    }
+```
+
 <a id = "put-channels">3)</a>`PUT` /v1/channels/{channelId}
+
+Updates channel with one of provided field info
+
+First you should introduce path variable : for example `/v1/channels/1`
+
+`Request Body : `
+Use one of the fields to update existing channel
+```
+    {
+       "title": "Film review",
+       "shortDescription": "Here you can track all latest reviews",
+       "category": "Film",
+       "language": "RU",
+       "avatar": "string"
+    }
+```
+
+`Responses: `
+
+`204`: channel was successfully updated
+
+`400`: Invalid input for update
+
+Response Example :
+```
+    {
+       "message": "invalid input"
+    }
+```  
+
+
+`403`: access denied due to lack of permissions
+
+Response Example : 
+```
+    {
+       "message": "access denied due to lack of permissions"
+    }
+```
+
+`404`: channel with that id wasn't found
+
+Response Example :
+```
+    {
+       "message": "provided channel wasn't found"
+    }
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
 
 <a id = "patch-channels">4)</a>`PATCH` /v1/channels/{channelId}
 
+Updates channel with provided info
+
+First you should introduce path variable : for example `/v1/channels/1`
+
+`Request Body : `
+
+```
+    {
+       "title": "Film review",
+       "shortDescription": "Here you can track all latest reviews",
+       "category": "Film",
+       "language": "RU",
+       "avatar": "string"
+    }
+```
+
+`Responses: `
+
+`204`: channel was successfully updated
+
+`400`: Invalid input for update
+
+Response Example :
+```
+    {
+       "message": "invalid input"
+    }
+```  
+
+
+`403`: access denied due to lack of permissions
+
+Response Example :
+```
+    {
+       "message": "access denied due to lack of permissions"
+    }
+```
+
+`404`: channel with that id wasn't found
+
+Response Example :
+```
+    {
+       "message": "provided channel wasn't found"
+    }
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
 <a id = "get-channels">5)</a>`GET` /v1/channels/{channelId}
+
+get info about specific channel
+
+First you should introduce path variable : for example `/v1/channels/1`
+
+`Responses: `
+
+`200`: info was successfully given
+
+```
+    {
+         "id": 10,
+         "title": "Film review",
+         "author": {
+           "id": "11a32b4f-8ff0-4676-830c-986b90a4b7df",
+           "nickname": "meshicage",
+           "name": "Vlad",
+           "email": "meshicage@yandex.ru"
+      },
+         "subscribers": [
+      {
+           "id": "11a32b4f-8ff0-4676-830c-986b90a4b7df",
+           "nickname": "meshicage",
+           "name": "Vlad",
+           "email": "meshicage@yandex.ru"
+      }
+      ],
+        "shortDescription": "Here you can track all latest reviews",
+        "creationDate": "2022-12-12",
+        "category": {
+           "id": 1,
+           "name": "FILM"
+         },
+        "language": "RU",
+        "avatar": "string"
+     }
+```
+
+`403`: access denied due to lack of permissions
+
+```
+    {
+       "message": "access denied due to lack of permissions"
+    }
+```
+
+`404`: channel with that id wasn't found
+
+Response Example :
+```
+    {
+        "message": "channel wasn't found"
+    }
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
